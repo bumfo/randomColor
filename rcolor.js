@@ -1,13 +1,13 @@
-var colorNames = [
-  'monochrome',
-  'red',
-  'orange',
-  'yellow',
-  'green',
-  'blue',
-  'purple',
-  'pink',
-];
+var colorNames = {
+  'monochrome': 0,
+  'red': 1,
+  'orange': 2,
+  'yellow': 3,
+  'green': 4,
+  'blue': 5,
+  'purple': 6,
+  'pink': 7,
+};
 
 var colorHues = [
   null,
@@ -93,9 +93,7 @@ var colorLBounds = [
 
 var colorSRanges = colorLBounds.map(lbounds => [lbounds[0][0], lbounds[lbounds.length - 1][0]]);
 
-function randomColor(colorName) {
-  var i = colorNames.indexOf(colorName);
-
+function randomColor(i = -1) {
   var H = pickHue(i); if (i == -1) i = getColorInfo(i);
   var S = pickSaturation(i);
   var B = pickBrightness(i, S);
@@ -106,8 +104,6 @@ function pickHue(i) {
   var hueRange = i == -1 ? [0, 360] : colorHues[i];
 
   hue = randomWithin(hueRange);
-  // Instead of storing red as two seperate ranges,
-  // we group them, using negative numbers
   if (hue < 0) {
     hue = 360 + hue;
   }
@@ -153,7 +149,6 @@ function getMinimumBrightness(i, S) {
 }
 
 function getColorInfo(hue) {
-  // Maps red colors to make picking hue easier
   if (hue >= 334 && hue <= 360) {
     hue -= 360;
   }
