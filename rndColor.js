@@ -10,7 +10,7 @@ var colorNames = {
 };
 
 var colorHues = [
-  null,
+  [NaN, NaN], 
   [-26, 18],
   [19, 46],
   [47, 62],
@@ -20,81 +20,33 @@ var colorHues = [
   [283, 334],
 ];
 
-var colorLBounds = [
-  [
-    [0, 0],
-    [100, 0],
-  ], [
-    [20, 100],
-    [30, 92],
-    [40, 89],
-    [50, 85],
-    [60, 78],
-    [70, 70],
-    [80, 60],
-    [90, 55],
-    [100, 50],
-  ], [
-    [20, 100],
-    [30, 93],
-    [40, 88],
-    [50, 86],
-    [60, 85],
-    [70, 70],
-    [100, 70],
-  ], [
-    [25, 100],
-    [40, 94],
-    [50, 89],
-    [60, 86],
-    [70, 84],
-    [80, 82],
-    [90, 80],
-    [100, 75],
-  ], [
-    [30, 100],
-    [40, 90],
-    [50, 85],
-    [60, 81],
-    [70, 74],
-    [80, 64],
-    [90, 50],
-    [100, 40],
-  ], [
-    [20, 100],
-    [30, 86],
-    [40, 80],
-    [50, 74],
-    [60, 60],
-    [70, 52],
-    [80, 44],
-    [90, 39],
-    [100, 35],
-  ], [
-    [20, 100],
-    [30, 87],
-    [40, 79],
-    [50, 70],
-    [60, 65],
-    [70, 59],
-    [80, 52],
-    [90, 45],
-    [100, 42],
-  ], [
-    [20, 100],
-    [30, 90],
-    [40, 86],
-    [60, 84],
-    [80, 80],
-    [90, 75],
-    [100, 73],
-  ],
+var colorLBounds0 = [
+  [0, 100],
+  [20, 30, 40, 50, 60, 70, 80, 90, 100],
+  [20, 30, 40, 50, 60, 70, 100],
+  [25, 40, 50, 60, 70, 80, 90, 100],
+  [30, 40, 50, 60, 70, 80, 90, 100],
+  [20, 30, 40, 50, 60, 70, 80, 90, 100],
+  [20, 30, 40, 50, 60, 70, 80, 90, 100],
+  [20, 30, 40, 60, 80, 90, 100]
 ];
 
-var colorSRanges = colorLBounds.map(lbounds => [lbounds[0][0], lbounds[lbounds.length - 1][0]]);
+var colorLBounds1 = [
+  [0, 0],
+  [100, 92, 89, 85, 78, 70, 60, 55, 50],
+  [100, 93, 88, 86, 85, 70, 70],
+  [100, 94, 89, 86, 84, 82, 80, 75],
+  [100, 90, 85, 81, 74, 64, 50, 40],
+  [100, 86, 80, 74, 60, 52, 44, 39, 35],
+  [100, 87, 79, 70, 65, 59, 52, 45, 42],
+  [100, 90, 86, 84, 80, 75, 73]
+];
 
-function randomColor(i = -1) {
-  var H = pickHue(i); if (i == -1) i = getColorInfo(i);
+var colorSRanges = colorLBounds0.map(lbounds => [lbounds[0], lbounds[lbounds.length - 1]]);
+
+function rndColor(i = -1) {
+  var H = pickHue(i);
+  if (i == -1) i = getColorInfo(i);
   var S = pickSaturation(i);
   var B = pickBrightness(i, S);
   return [H, S, B];
@@ -128,16 +80,17 @@ function pickBrightness(i, S) {
 }
 
 function getMinimumBrightness(i, S) {
-  var lowerBounds = colorLBounds[i];
+  var lowerBounds0 = colorLBounds0[i];
+  var lowerBounds1 = colorLBounds1[i];
 
-  for (var i = 0; i < lowerBounds.length - 1; i++) {
-    var s1 = lowerBounds[i][0];
-    var v1 = lowerBounds[i][1];
-
-    var s2 = lowerBounds[i + 1][0];
-    var v2 = lowerBounds[i + 1][1];
+  for (var i = 0; i < lowerBounds0.length - 1; i++) {
+    var s1 = lowerBounds0[i];
+    var s2 = lowerBounds0[i + 1];
 
     if (S >= s1 && S <= s2) {
+      var v1 = lowerBounds1[i];
+      var v2 = lowerBounds1[i + 1];
+
       var m = (v2 - v1) / (s2 - s1);
       var b = v1 - m * s1;
 
