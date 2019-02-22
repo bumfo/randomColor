@@ -46,16 +46,16 @@ var colorSRanges = colorLBounds0.map(lbounds => [lbounds[0], lbounds[lbounds.len
 
 function rndColor(i = -1) {
   var H = pickHue(i);
-  if (i == -1) i = getColorInfo(i);
+  if (i == -1) i = getColorIndex(i);
   var S = pickSaturation(i);
   var B = pickBrightness(i, S);
   return [H, S, B];
-};
+}
 
 function pickHue(i) {
   var hueRange = i == -1 ? [0, 360] : colorHues[i];
 
-  hue = randomWithin(hueRange);
+  var hue = randomWithin(hueRange);
   if (hue < 0) {
     hue = 360 + hue;
   }
@@ -83,13 +83,13 @@ function getMinimumBrightness(i, S) {
   var lowerBounds0 = colorLBounds0[i];
   var lowerBounds1 = colorLBounds1[i];
 
-  for (var i = 0; i < lowerBounds0.length - 1; i++) {
-    var s1 = lowerBounds0[i];
-    var s2 = lowerBounds0[i + 1];
+  for (var j = 0; j < lowerBounds0.length - 1; j++) {
+    var s1 = lowerBounds0[j];
+    var s2 = lowerBounds0[j + 1];
 
     if (S >= s1 && S <= s2) {
-      var v1 = lowerBounds1[i];
-      var v2 = lowerBounds1[i + 1];
+      var v1 = lowerBounds1[j];
+      var v2 = lowerBounds1[j + 1];
 
       var m = (v2 - v1) / (s2 - s1);
       var b = v1 - m * s1;
@@ -101,14 +101,14 @@ function getMinimumBrightness(i, S) {
   return 0;
 }
 
-function getColorInfo(hue) {
+function getColorIndex(hue) {
   if (hue >= 334 && hue <= 360) {
     hue -= 360;
   }
 
   for (var i = 1; i < colorHues.length; ++i) {
-    var r = colorHues[i];
-    if (r[0] <= hue && hue <= r[1]) {
+    var range = colorHues[i];
+    if (range[0] <= hue && hue <= range[1]) {
       return i;
     }
   }
