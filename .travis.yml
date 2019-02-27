@@ -1,2 +1,6 @@
 language: c
 compiler: clang
+script: gcc rndColor.h
+branches:
+  only:
+  - master
